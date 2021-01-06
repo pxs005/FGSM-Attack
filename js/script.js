@@ -43,7 +43,7 @@ canvas.window = 100;
 
     })
 
-function myFunction(){
+function erasePad(){
       const canvas = document.querySelector("#canvas");
     const ctx = canvas.getContext("2d");
 
