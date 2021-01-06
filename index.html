@@ -6,22 +6,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css">
 
 
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="/css/style.css">
 
 
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=0">
   </head>
 
-  <body>
-
-  <p>Hello World</p>
+<body>
 
 
 
+<canvas id="canvas"></canvas>
 
+  <button onClick="erasePad()">Erase</button>
+
+
+<form>
+  <label for="imgLabel">Image Label:</label><br>
+  <input type="imgLabelText"><br>
+  <label for="epsilonValue">Epsilon Value:</label><br>
+  <input type="text">
+</form>
 
   </body>
-  <script src="js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+  <script src="/js/script.js"></script>
 
 
 </html>
