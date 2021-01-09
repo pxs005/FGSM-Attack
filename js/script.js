@@ -1,8 +1,9 @@
 
  let model;
+
 async function loadModel() {
 //   model = await tf.loadLayersModel('https://foo.bar/tfjs_artifacts/model.json');
-  
+
 
 
   console.log("Finished loading model");
@@ -10,7 +11,7 @@ async function loadModel() {
 };
 
 loadModel();
- 
+
 
 window.addEventListener("load", () => {
     const canvas = document.querySelector("#canvas");
@@ -74,26 +75,28 @@ canvas.window = 100;
 
 function handleImageStuff(){
   //apply preprocessing
-  var img = applyPreprocessing(); 
+  var img = applyPreprocessing();
   //applyPreprocessing();
   displayOriginalImage(img);
 
-  
+
 }
 
 
 function displayOriginalImage(parm){
-  
-  
+
+
 tf.browser.toPixels(parm, document.getElementsByTagName("canvas")[0]);
 
 }
 
 function predictOriginal(){
-  
+
 }
+
+
 function displayAdversarialImage(){
-  
+
 }
 
 
@@ -101,25 +104,25 @@ function displayAdversarialImage(){
 
 
 function applyPreprocessing(){
- 
+
   const canvas = document.querySelector("#canvas");
   var img = tf.browser.fromPixels(canvas);
 
   img = tf.image.resizeNearestNeighbor(img, [28, 28]);
   img = img.mean(2);
 
-  
+
   img = tf.reshape(img, [1, 28*28]);
 
 
     //cast to dtype float32
   //img = img.asType('float32');
-  
+
 
   //greyscale
   // reshape to dim  [1, width, height, 1]
 
-    // img = img.mean(2).toFloat().expandDims(0).expandDims(-1); 
+    // img = img.mean(2).toFloat().expandDims(0).expandDims(-1);
 
   return img
 
