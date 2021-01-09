@@ -1,5 +1,18 @@
 
- window.addEventListener("load", () => {
+ let model;
+async function loadModel() {
+//   model = await tf.loadLayersModel('https://foo.bar/tfjs_artifacts/model.json');
+  
+
+
+  console.log("Finished loading model");
+
+};
+
+loadModel();
+ 
+
+window.addEventListener("load", () => {
     const canvas = document.querySelector("#canvas");
     const ctx = canvas.getContext("2d");
 
@@ -7,6 +20,8 @@
     //canvas.window = window.innerWidth;
 canvas.height = 100;
 canvas.window = 100;
+       ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     let painting = false;
 
 
@@ -26,6 +41,7 @@ canvas.window = 100;
 
       ctx.linewWidth = 60;
       ctx.lineCap = "round";
+     // ctx.strokeStyle = "#FF0000";
 
       ctx.lineTo(e.clientX, e.clientY);
       ctx.stroke();
@@ -41,7 +57,7 @@ canvas.window = 100;
 
 
 
-    })
+    });
 
 function erasePad(){
       const canvas = document.querySelector("#canvas");
@@ -56,24 +72,54 @@ canvas.window = 100;
 }
 
 
-function applyPreprocessing(img){
+function handleImageStuff(){
+  //apply preprocessing
+  var img = applyPreprocessing(); 
+  //applyPreprocessing();
+  displayOriginalImage(img);
+
+  
+}
 
 
-//  var img = document.getElementById('my-image').asType('float32');
+function displayOriginalImage(parm){
+  
+  
+tf.browser.toPixels(parm, document.getElementsByTagName("canvas")[0]);
+
+}
+
+function predictOriginal(){
+  
+}
+function displayAdversarialImage(){
+  
+}
+
+
+
+
+
+function applyPreprocessing(){
  
   const canvas = document.querySelector("#canvas");
   var img = tf.browser.fromPixels(canvas);
+
+  img = tf.image.resizeNearestNeighbor(img, [28, 28]);
+  img = img.mean(2);
+
+  
+  img = tf.reshape(img, [1, 28*28]);
+
+
     //cast to dtype float32
-  img = img.asType('float32');
+  //img = img.asType('float32');
   
 
   //greyscale
   // reshape to dim  [1, width, height, 1]
-   img = tf.browser.fromPixels(img)
-    .mean(2)
-    .toFloat()
-    .expandDims(0)
-    .expandDims(-1);
+
+    // img = img.mean(2).toFloat().expandDims(0).expandDims(-1); 
 
   return img
 
