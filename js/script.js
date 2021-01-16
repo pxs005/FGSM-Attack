@@ -88,7 +88,7 @@ function handleImageStuff() {
     arr = retrieveVals(arr);
 
     //Need to be fixed! Need to address the issue of the loss function
-    var gradient = getGradient(arr[0], pred); //need to fix
+    var gradient = getGradient(img, arr[0], pred); //need to fix
     var advImage = generateAdversarialImage(img, arr[1], gradient);
 
     var advPred = predictAdversarial(model, img);
@@ -149,7 +149,6 @@ function applyPreprocessing() {
     var img = tf.browser.fromPixels(canvas);
 
     img = tf.image.resizeNearestNeighbor(img, [28, 28]);
-
     img = img.mean(2).toFloat().expandDims(0).expandDims(-1); //Shape: [1, 28,28,1]
     img = tf.div(img,255);
     console.log("Image's shape",img.shape);
@@ -164,11 +163,34 @@ function calculateLoss(yTrue, yPred) {
     return x;
 }
 
-function getGradient(yTrue, yPred) {
+function getGradient(img, yTrue, yPred) {
+    /*
     const g = tf.grad(calculateLoss(yTrue,yPred));
     return g;
+    */
+    function f(img) {
+        yTrue = tf.oneHot(tf.tensor1d([yTrue], 'int32'), 10);
+        console.log(yTrue.shape);
+        return tf.metrics.categoricalCrossentropy(yTrue, yPred);
+        
+    }
+    img = tf.image.resizeNearestNeighbor(img, [28, 28]);
+    img = tf.squeeze(img);
+    console.log(img.shape);
+    var g = tf.grad(f);
+    g(img).print();
+   
 }
 
+/*
+function f(img) {
+    yTrue = tf.oneHot(tf.tensor1d([yTrue], 'int32'), 10);
+    return tf.metrics.categoricalCrossentropy(model.predict(img), lbl);
+    // (Typo: the order of arguments should be flipped, but it does not affect the question here)
+}
+var g = tf.grad(f);
+g(img).print();
+*/
 function generateAdversarialImage(image,epsilon,pertubation) {
     //pertubation from getGradient function
     var x = tf.sign(pertubation).mul(epsilon);
