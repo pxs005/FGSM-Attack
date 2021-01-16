@@ -72,11 +72,13 @@ function handleImageStuff() {
     pred.print();
 
     var x = tf.squeeze(pred);
+    x.softmax().print(); // print probabilities of selected digit
 
     x = x.argMax(); //prediced value of original image
     console.log(typeof x);
-    console.log("Predicted value:");
-    x.print();
+    x = x.dataSync()[0]; // extract data and store in element
+    console.log("Predicted value:", x);
+    //x.print();
 
 
     //display the original image and predicted value and model's confidence
