@@ -73,6 +73,8 @@ function handleImageStuff() {
 
     var x = tf.squeeze(pred);
     x.softmax().print(); // print probabilities of selected digit
+    x = x.softmax();
+   var probArr = x.dataSync();
 
     x = x.argMax(); //prediced value of original image
     console.log(typeof x);
@@ -85,23 +87,46 @@ function handleImageStuff() {
     displayOriginalImage(img);
     //document.getElementById('original image').innerHTML = img;
     document.getElementById('original prediction').innerHTML = '<p>Predicted Value: </p>' + x;
+
+    var predProb = probArr[x].toFixed(4) *100;
+    document.getElementById('original prediction prob').innerHTML = '<p>Predicted Prob: </p>' + predProb + '%';
+
     //Retrieve the image label and epsilon value and store in an array
     var arr = [];
     arr = retrieveVals(arr);
 
-    //Need to be fixed! Need to address the issue of the loss function
-    var gradient = getGradient(img, arr[0], pred); //need to fix
+    //var advImage = newGradient(img, arr[0]);
+
+    var gradient = getGradient(img, arr[0]); //need to fix
     var advImage = generateAdversarialImage(img, arr[1], gradient);
 
-    var advPred = predictAdversarial(model, img);
+    var advPred = predictAdversarial(model, advImage);
     var y = tf.squeeze(advPred);
+
+    y.print();
+
+    y = y.softmax();
+        y.print();
+
+    var probAdvArr = y.dataSync();
     y = y.argMax(); //predicted value of adversarial image
 
     console.log("Predicted Adversarial value:");
     y.print();
 
+    y = y.dataSync()[0]; // extract data and store in element
+    console.log("Predicted value:", y);
+
     //display the adversarial image and predicted value and model's confidence
-    //displayAdversarialImage(advImage);
+    displayAdversarialImage(advImage);
+
+    //document.getElementById('original image').innerHTML = img;
+    document.getElementById('adversarial prediction').innerHTML = '<p>Predicted Adv Value: </p>' + y;
+
+    var predAdvProb = probAdvArr[y].toFixed(4) *100;
+    document.getElementById('adversarial prediction prob').innerHTML = '<p>Predicted Adv Prob: </p>' + predAdvProb + '%';
+
+
 
 }
 
@@ -127,6 +152,7 @@ function displayOriginalImage(parm) {
     var parm = tf.squeeze(parm);
     var x = parm.shape;
     tf.browser.toPixels(parm, document.getElementsByTagName('canvas')[1]);
+
     //tf.browser.toPixels(parm, document.getElementsByTagName("original image")[0]);
 }
 
@@ -137,8 +163,11 @@ function predictOriginal(model, preprocessed_image) {
 
 
 function displayAdversarialImage(adv_image) {
+    adv_image = tf.image.resizeNearestNeighbor(adv_image, [100, 100]);
+     adv_image = tf.squeeze(adv_image);
+    var x = adv_image.shape;
     //maybe display the image in a canvas element
-    //tf.browser.toPixels(adv_image, document.getElementsByTagName("canvas2")[0]);
+    tf.browser.toPixels(adv_image, document.getElementsByTagName("canvas")[2]);
 }
 
 function predictAdversarial(model, adv_image) {
@@ -165,7 +194,8 @@ function calculateLoss(yTrue, yPred) {
     return x;
 }
 
-function getGradient(img, yTrue, yPred) {
+
+function getGradient(img, yTrue) {
     /*
     const g = tf.grad(calculateLoss(yTrue,yPred));
     return g;
@@ -173,15 +203,14 @@ function getGradient(img, yTrue, yPred) {
     function f(img) {
         yTrue = tf.oneHot(tf.tensor1d([yTrue], 'int32'), 10);
         console.log(yTrue.shape);
-        return tf.metrics.categoricalCrossentropy(yTrue, yPred);
+        return tf.metrics.categoricalCrossentropy(yTrue, model.predict(img));
         
     }
-    img = tf.image.resizeNearestNeighbor(img, [28, 28]);
-    img = tf.squeeze(img);
-    console.log(img.shape);
+    //img = tf.image.resizeNearestNeighbor(img, [28, 28]);
+    //img = tf.squeeze(img);
+    //console.log(img.shape);
     var g = tf.grad(f);
-    g(img).print();
-   
+    return g(img);
 }
 
 /*
@@ -194,6 +223,7 @@ var g = tf.grad(f);
 g(img).print();
 */
 function generateAdversarialImage(image,epsilon,pertubation) {
+epsilon = tf.tensor1d([epsilon], 'float32');
     //pertubation from getGradient function
     var x = tf.sign(pertubation).mul(epsilon);
     x = image.add(x).clipByValue(0,1);
