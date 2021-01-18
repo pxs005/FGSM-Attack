@@ -16,7 +16,7 @@ window.addEventListener("load", () => {
     //canvas.window = window.innerWidth;
     canvas.height = 300;
     canvas.window = 300;
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     let painting = false;
 
@@ -36,7 +36,7 @@ window.addEventListener("load", () => {
 
         ctx.lineWidth = 15;
         ctx.lineCap = "round";
-        //ctx.strokeStyle = "#FF0000";
+        ctx.strokeStyle = "white";
 
         ctx.lineTo(e.clientX, e.clientY);
         ctx.stroke();
@@ -59,7 +59,7 @@ function erasePad() {
     canvas.window = 300;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     let painting = false;
 
@@ -232,18 +232,4 @@ epsilon = tf.tensor1d([epsilon], 'float32');
     return x;
 }
 
-//might get rid
-function retrievePredictionDict(model, img){
 
-  dict = {};
-  var label = model.predict(img);
-
-  dict.append(label);
-
-  //also get prediction of confidence
-
-  //append to dict
-  return dict
-
-
-}
