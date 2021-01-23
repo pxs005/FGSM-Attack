@@ -10,32 +10,33 @@
     </head>
 
     <body id = "body">
-        <canvas id="canvas"></canvas>
-        <br>
-        <form id="myForm">
-            <label>Image Label:</label><br>
-            <input type="text"><br>
-            <label>Epsilon Value:</label><br>
-            <input type="text">
-        </form>
-        <br>
-        <button onClick="erasePad()">Erase</button>
-        <button onClick="handleImageStuff()">Submit</button>
-        <br>
-        <canvas id="original image"></canvas>
-        <div id = "original prediction">
-
-        </div>
-        <div id = "original prediction prob">
+        <div id = "userinput">
+            <canvas id="canvas"></canvas>
+            <br>
+            <form id="myForm">
+                <label>Image Label:</label><br>
+                <input type="text"><br>
+                <label>Epsilon Value:</label><br>
+                <input type="text">
+            </form>
+            <br>
+            <button onClick="erasePad()">Erase</button>
+            <button onClick="handleImageStuff()">Submit</button>
+            <br>
         </div>
 
-
-        <canvas id="adversarial image"></canvas>
-        <div id = "adversarial prediction">
-
+        <div id = "original">
+            <h3>Original Image</h3>
+            <canvas id="original image"></canvas>
+            <div id = "original prediction"></div>
+            <div id = "original prediction prob"></div>
         </div>
-
-        <div id = "adversarial prediction prob">
+        
+        <div id = "adversarial">
+            <h3>Adversarial Image</h3>
+            <canvas id="adversarial image"></canvas>
+            <div id = "adversarial prediction"></div>
+            <div id = "adversarial prediction prob"></div>
         </div>
     </body>
 </html>
