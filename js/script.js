@@ -86,10 +86,10 @@ function handleImageStuff() {
     //display the original image and predicted value and model's confidence
     displayOriginalImage(img);
     //document.getElementById('original image').innerHTML = img;
-    document.getElementById('original prediction').innerHTML = '<p>Predicted Value: </p>' + x;
+    document.getElementById('original prediction').innerHTML = '<p>Predicted Value: '+ x + '</p>';
 
     var predProb = probArr[x].toFixed(4) *100;
-    document.getElementById('original prediction prob').innerHTML = '<p>Predicted Prob: </p>' + predProb + '%';
+    document.getElementById('original prediction prob').innerHTML = '<p>Predicted Prob: ' + predProb + '%</p>';
 
     //Retrieve the image label and epsilon value and store in an array
     var arr = [];
@@ -98,6 +98,7 @@ function handleImageStuff() {
     //var advImage = newGradient(img, arr[0]);
 
     var gradient = getGradient(img, arr[0]); //need to fix
+    console.log(gradient.dataSync());
     var advImage = generateAdversarialImage(img, arr[1], gradient);
 
     var advPred = predictAdversarial(model, advImage);
@@ -121,10 +122,10 @@ function handleImageStuff() {
     displayAdversarialImage(advImage);
 
     //document.getElementById('original image').innerHTML = img;
-    document.getElementById('adversarial prediction').innerHTML = '<p>Predicted Adv Value: </p>' + y;
+    document.getElementById('adversarial prediction').innerHTML = '<p>Predicted Value: '+ y + '</p>';
 
     var predAdvProb = probAdvArr[y].toFixed(4) *100;
-    document.getElementById('adversarial prediction prob').innerHTML = '<p>Predicted Adv Prob: </p>' + predAdvProb + '%';
+    document.getElementById('adversarial prediction prob').innerHTML = '<p>Predicted Prob: ' + predAdvProb + '%</p>';
 
 
 
@@ -223,8 +224,9 @@ var g = tf.grad(f);
 g(img).print();
 */
 function generateAdversarialImage(image,epsilon,pertubation) {
-epsilon = tf.tensor1d([epsilon], 'float32');
+    epsilon = tf.tensor1d([epsilon], 'float32');
     //pertubation from getGradient function
+    console.log(tf.sign(pertubation).dataSync());
     var x = tf.sign(pertubation).mul(epsilon);
     x = image.add(x).clipByValue(0,1);
 
