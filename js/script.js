@@ -1,4 +1,3 @@
-
 let model;
 async function loadModel() {
     model = await tf.loadLayersModel('tfjs_model/model.json');
@@ -17,9 +16,8 @@ window.addEventListener("load", () => {
     canvas.height = 300;
     canvas.window = 300;
     ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillRect(0, 0, canvas.width, canvas.height); 
     let painting = false;
-
 
     function startPosition(e) {
         painting = true;
@@ -62,9 +60,7 @@ function erasePad() {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     let painting = false;
-
 }
-
 
 function handleImageStuff() {
     var img = applyPreprocessing(); //apply preprocessing
@@ -72,16 +68,17 @@ function handleImageStuff() {
     pred.print();
 
     var x = tf.squeeze(pred);
-    x.softmax().print(); // print probabilities of selected digit
-    x = x.softmax();
-   var probArr = x.dataSync();
+    console.log("Original Predictions:")
+    x.print(); // print probabilities of selected digit
+    //x = x.softmax();
+    
+    var probArr = x.dataSync();
 
     x = x.argMax(); //prediced value of original image
     console.log(typeof x);
     x = x.dataSync()[0]; // extract data and store in element
     console.log("Predicted value:", x);
     //x.print();
-
 
     //display the original image and predicted value and model's confidence
     displayOriginalImage(img);
@@ -104,10 +101,9 @@ function handleImageStuff() {
     var advPred = predictAdversarial(model, advImage);
     var y = tf.squeeze(advPred);
 
+    //y = y.softmax();
+    console.log("Adversarial Predictions:")
     y.print();
-
-    y = y.softmax();
-        y.print();
 
     var probAdvArr = y.dataSync();
     y = y.argMax(); //predicted value of adversarial image
@@ -126,11 +122,7 @@ function handleImageStuff() {
 
     var predAdvProb = probAdvArr[y].toFixed(4) *100;
     document.getElementById('adversarial prediction prob').innerHTML = '<p>Predicted Prob: ' + predAdvProb + '%</p>';
-
-
-
 }
-
 
 function retrieveVals(arr) {
     var x = document.getElementById("myForm");
@@ -143,18 +135,14 @@ function retrieveVals(arr) {
     }
 
     return arr;
-
 }
-
-
 
 function displayOriginalImage(parm) {
     parm = tf.image.resizeNearestNeighbor(parm, [100, 100]);
     var parm = tf.squeeze(parm);
     var x = parm.shape;
+    //display the image in a canvas element
     tf.browser.toPixels(parm, document.getElementsByTagName('canvas')[1]);
-
-    //tf.browser.toPixels(parm, document.getElementsByTagName("original image")[0]);
 }
 
 function predictOriginal(model, preprocessed_image) {
@@ -162,12 +150,11 @@ function predictOriginal(model, preprocessed_image) {
     return result;
 }
 
-
 function displayAdversarialImage(adv_image) {
     adv_image = tf.image.resizeNearestNeighbor(adv_image, [100, 100]);
-     adv_image = tf.squeeze(adv_image);
+    adv_image = tf.squeeze(adv_image);
     var x = adv_image.shape;
-    //maybe display the image in a canvas element
+    //display the image in a canvas element
     tf.browser.toPixels(adv_image, document.getElementsByTagName("canvas")[2]);
 }
 
@@ -188,19 +175,13 @@ function applyPreprocessing() {
     return img
 }
 
-
 function calculateLoss(yTrue, yPred) {
     yTrue = tf.oneHot(tf.tensor1d([yTrue], 'int32'), 10);
     var x = tf.metrics.categoricalCrossentropy(yTrue,yPred);
     return x;
 }
 
-
 function getGradient(img, yTrue) {
-    /*
-    const g = tf.grad(calculateLoss(yTrue,yPred));
-    return g;
-    */
     function f(img) {
         yTrue = tf.oneHot(tf.tensor1d([yTrue], 'int32'), 10);
         console.log(yTrue.shape);
@@ -214,15 +195,6 @@ function getGradient(img, yTrue) {
     return g(img);
 }
 
-/*
-function f(img) {
-    yTrue = tf.oneHot(tf.tensor1d([yTrue], 'int32'), 10);
-    return tf.metrics.categoricalCrossentropy(model.predict(img), lbl);
-    // (Typo: the order of arguments should be flipped, but it does not affect the question here)
-}
-var g = tf.grad(f);
-g(img).print();
-*/
 function generateAdversarialImage(image,epsilon,pertubation) {
     epsilon = tf.tensor1d([epsilon], 'float32');
     //pertubation from getGradient function
@@ -230,8 +202,5 @@ function generateAdversarialImage(image,epsilon,pertubation) {
     var x = tf.sign(pertubation).mul(epsilon);
     x = image.add(x).clipByValue(0,1);
 
-    //  image + epsilon * pertubation;
     return x;
 }
-
-
