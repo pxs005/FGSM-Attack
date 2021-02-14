@@ -1,18 +1,17 @@
 #canvas {
     border: 2px solid black;
-    padding: 20px;
+    padding: 5px;
 }
 
-#userinput, #original, #adversarial {display: inline-block; *display: inline; zoom: 1; vertical-align: top;}
+#userinput, #original, #adversarial {
+    display: inline-block; 
+    *display: inline; 
+    zoom: 1; 
+    vertical-align: top;
+}
 
 #userinput {
     font-family:'Lucida Sans';
-    /*
-    margin-top: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    */
 }
 
 #original {
