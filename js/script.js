@@ -11,8 +11,6 @@ window.addEventListener("load", () => {
     const canvas = document.querySelector("#canvas");
     const ctx = canvas.getContext("2d");
 
-    //canvas.height = window.innerHeight;
-    //canvas.window = window.innerWidth;
     canvas.height = 300;
     canvas.window = 300;
     ctx.fillStyle = 'black';
@@ -51,8 +49,6 @@ function erasePad() {
     const canvas = document.querySelector("#canvas");
     const ctx = canvas.getContext("2d");
 
-    //canvas.height = window.innerHeight;
-    //canvas.window = window.innerWidth;
     canvas.height = 300;
     canvas.window = 300;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -70,7 +66,6 @@ function handleImageStuff() {
     var x = tf.squeeze(pred);
     console.log("Original Predictions:")
     x.print(); // print probabilities of selected digit
-    //x = x.softmax();
     
     var probArr = x.dataSync();
 
@@ -78,21 +73,18 @@ function handleImageStuff() {
     console.log(typeof x);
     x = x.dataSync()[0]; // extract data and store in element
     console.log("Predicted value:", x);
-    //x.print();
 
     //display the original image and predicted value and model's confidence
     displayOriginalImage(img);
-    //document.getElementById('original image').innerHTML = img;
-    document.getElementById('original prediction').innerHTML = '<p>Predicted Value: '+ x + '</p>';
+    document.getElementById('original title').innerHTML = '<p>Original Image</p>';
 
     var predProb = probArr[x].toFixed(4) *100;
-    document.getElementById('original prediction prob').innerHTML = '<p>Predicted Prob: ' + predProb + '%</p>';
+    predProb = Math.round(predProb*100) / 100;
+    document.getElementById('original prediction').innerHTML = '<p>Predicted to be a <strong>' + x + '</strong> with <strong>' + predProb + '%</strong> confidence</p>';
 
     //Retrieve the image label and epsilon value and store in an array
     var arr = [];
     arr = retrieveVals(arr);
-
-    //var advImage = newGradient(img, arr[0]);
 
     var gradient = getGradient(img, arr[0]); //need to fix
     console.log(gradient.dataSync());
@@ -101,7 +93,6 @@ function handleImageStuff() {
     var advPred = predictAdversarial(model, advImage);
     var y = tf.squeeze(advPred);
 
-    //y = y.softmax();
     console.log("Adversarial Predictions:")
     y.print();
 
@@ -118,10 +109,11 @@ function handleImageStuff() {
     displayAdversarialImage(advImage);
 
     //document.getElementById('original image').innerHTML = img;
-    document.getElementById('adversarial prediction').innerHTML = '<p>Predicted Value: '+ y + '</p>';
+    document.getElementById('adversarial title').innerHTML = '<p>Adversarial Image</p>';
 
     var predAdvProb = probAdvArr[y].toFixed(4) *100;
-    document.getElementById('adversarial prediction prob').innerHTML = '<p>Predicted Prob: ' + predAdvProb + '%</p>';
+    predAdvProb = Math.round(predAdvProb*100) / 100;
+    document.getElementById('adversarial prediction').innerHTML = '<p>Predicted to be a <strong>' + y + '</strong> with <strong>' + predAdvProb + '%</strong> confidence</p>';
 }
 
 function retrieveVals(arr) {
@@ -138,7 +130,7 @@ function retrieveVals(arr) {
 }
 
 function displayOriginalImage(parm) {
-    parm = tf.image.resizeNearestNeighbor(parm, [100, 100]);
+    parm = tf.image.resizeNearestNeighbor(parm, [300, 300]);
     var parm = tf.squeeze(parm);
     var x = parm.shape;
     //display the image in a canvas element
@@ -151,7 +143,7 @@ function predictOriginal(model, preprocessed_image) {
 }
 
 function displayAdversarialImage(adv_image) {
-    adv_image = tf.image.resizeNearestNeighbor(adv_image, [100, 100]);
+    adv_image = tf.image.resizeNearestNeighbor(adv_image, [300, 300]);
     adv_image = tf.squeeze(adv_image);
     var x = adv_image.shape;
     //display the image in a canvas element
@@ -183,24 +175,16 @@ function calculateLoss(yTrue, yPred) {
 
 function getGradient(img, yTrue) {
     function f(img) {
-        yTrue = tf.oneHot(tf.tensor1d([yTrue], 'int32'), 10);
-        console.log(yTrue.shape);
-        return tf.metrics.categoricalCrossentropy(yTrue, model.predict(img));
-        
+        yTrue = tf.oneHot(tf.tensor1d([yTrue], 'int32'), 10); //true label of the image
+        return tf.metrics.categoricalCrossentropy(yTrue, model.predict(img)); //loss function    
     }
-    //img = tf.image.resizeNearestNeighbor(img, [28, 28]);
-    //img = tf.squeeze(img);
-    //console.log(img.shape);
-    var g = tf.grad(f);
-    return g(img);
+    var g = tf.grad(f); //gradient of loss function
+    return g(img); //gradient of loss function w.r.t image
 }
 
 function generateAdversarialImage(image,epsilon,pertubation) {
     epsilon = tf.tensor1d([epsilon], 'float32');
-    //pertubation from getGradient function
-    console.log(tf.sign(pertubation).dataSync());
-    var x = tf.sign(pertubation).mul(epsilon);
+    var x = tf.sign(pertubation).mul(epsilon); //pertubation from getGradient function
     x = image.add(x).clipByValue(0,1);
-
     return x;
 }
