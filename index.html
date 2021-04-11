@@ -2,43 +2,45 @@
 <html>
     <head>
         <title>FGSM Attack</title>
-        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="css/style.css">
-        <script src="js/script.js"></script>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=0">
     </head>
 
     <body id = "body">
         <div id = "parent-container">
         <div id = "userinput">
-            <canvas id="canvas"></canvas>
+            <canvas id="canvas" width="300" height="300"></canvas>
             <br>
+    
             <form id="myForm">
-                <label>Image Label:</label><br>
-                <input type="text"><br>
-                <label>Epsilon Value:</label><br>
-                <input type="text">
+                <div class="form-group">
+                  <label for="imageLabel">Image Label</label>
+                  <input type="number" min = 0 max = 9 class="form-control" id="imageLabel" placeholder="">
+                </div>
+                <div class="form-group">
+                  <label for="epsilonValue">Epsilon Value</label>
+                  <input type="text" class="form-control" id="epsilonValue" placeholder="">
+                </div>
             </form>
-            <br>
-            <button onClick="erasePad()">Erase</button>
-            <button onClick="handleImageStuff()">Submit</button>
-            <br>
+            <button onClick="erasePad()" class="btn btn-primary">Erase</button>
+            <button onClick="handleImageStuff()" class="btn btn-primary">Submit</button>
         </div>
 
         <div id = "original">
-            <h3>Original Image</h3>
-            <canvas id="original image"></canvas>
+            <canvas id="original image" width="300" height="300"></canvas>
+            <div id = "original title"></div>
             <div id = "original prediction"></div>
-            <div id = "original prediction prob"></div>
         </div>
         
         <div id = "adversarial">
-            <h3>Adversarial Image</h3>
-            <canvas id="adversarial image"></canvas>
+            <canvas id="adversarial image" width="300" height="300"></canvas>
+            <div id = "adversarial title"></div>
             <div id = "adversarial prediction"></div>
-            <div id = "adversarial prediction prob"></div>
         </div>
         </div>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+        <script src="js/script.js"></script>
     </body>
 </html>
