@@ -1,6 +1,28 @@
-#canvas {
-    border: 2px solid black;
+body, input {
+    background-color: #393e46;
+}
+
+h3, label, p {
+    color: #EEEEEE;
+}
+
+.btn {
+    background-color: #AAAAAA;
+    border-color: #AAAAAA;
+} 
+
+.btn:hover {
+    background-color: grey; 
+    border-color: grey;   
+}
+
+canvas {
     padding: 5px;
+}
+
+#imageLabel, #epsilonValue {
+    background-color: #393e46;
+    color: #EEEEEE;    
 }
 
 #userinput, #original, #adversarial {
@@ -12,22 +34,19 @@
 
 #userinput {
     font-family:'Lucida Sans';
+    margin-right: 20px;
 }
 
 #original {
     font-family:'Lucida Sans';
     text-align: center;
-    margin-top: 20px;
     margin-left: 20px;
     margin-right: 20px;
-    margin-bottom: 20px;
 }
 
 #adversarial {
     font-family:'Lucida Sans';
     text-align: center;
-    margin-top: 20px;
     margin-left: 20px;
     margin-right: 20px;
-    margin-bottom: 20px;
 }
